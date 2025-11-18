@@ -167,7 +167,7 @@ export default function GameForm({ initialData, onSubmit, onCancel }: GameFormPr
   const [formData, setFormData] = useState({
     title: initialData?.title || "",
     description: initialData?.description || "",
-    // category: initialData?.category || "",
+    category: initialData?.category || "",
     tipText: initialData?.tipText || "",
     videoUrl: initialData?.videoUrl || "",
     thumbnailUrl: initialData?.thumbnailUrl || "",
@@ -234,7 +234,7 @@ export default function GameForm({ initialData, onSubmit, onCancel }: GameFormPr
 
       {/* CATEGORY + TIP TEXT */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        {/* <div>
+        <div>
           <label className="block text-sm font-medium">Category</label>
           <input
             type="text"
@@ -243,7 +243,7 @@ export default function GameForm({ initialData, onSubmit, onCancel }: GameFormPr
             onChange={handleChange}
             className="w-full border px-3 py-2 rounded"
           />
-        </div> */}
+        </div>
 
         <div>
           <label className="block text-sm font-medium">Tip Text</label>

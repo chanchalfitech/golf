@@ -1,48 +1,66 @@
+// src/components/clubs/ClubForm.tsx
 import React, { useState } from 'react';
-import { GolfClub } from '../../types/models';
+import { ClubModel } from '../../model/ClubModel';
 
 interface GolfClubFormProps {
-  initialData?: GolfClub | null;
-  onSubmit: (data: Omit<GolfClub, 'id' | 'createdAt'>) => void;
+  initialData?: ClubModel | null;
+  onSubmit: (data: Omit<ClubModel, 'id' | 'createdAt' | 'updatedAt'>) => void;
   onCancel: () => void;
 }
 
-export default function GolfClubForm({ initialData, onSubmit, onCancel }: GolfClubFormProps) {
-  const [formData, setFormData] = useState({
-    name: initialData?.name || '',
-    address: initialData?.address || '',
-    city: initialData?.city || '',
-    state: initialData?.state || '',
-    zipCode: initialData?.zipCode || '',
-    phone: initialData?.phone || '',
-    email: initialData?.email || '',
-    website: initialData?.website || '',
-    facilities: initialData?.facilities || [],
+export default function GolfClubForm({
+  initialData,
+  onSubmit,
+  onCancel,
+}: GolfClubFormProps) {
+  const [formData, setFormData] = useState<
+    Omit<ClubModel, 'id' | 'createdAt' | 'updatedAt'>
+  >({
+    name: initialData?.name ?? '',
+    location: initialData?.location ?? '',
+    description: initialData?.description ?? '',
+    contactEmail: initialData?.contactEmail ?? '',
     isActive: initialData?.isActive ?? true,
+    totalCoaches: initialData?.totalCoaches ?? 0,
+    totalPupils: initialData?.totalPupils ?? 0,
   });
 
-  const [facilitiesInput, setFacilitiesInput] = useState(
-    initialData?.facilities?.join(', ') || ''
-  );
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    const { name, value, type } = e.target;
+
+    let newValue: string | number | boolean = value;
+
+    if (type === 'checkbox') {
+      newValue = (e.target as HTMLInputElement).checked;
+    } else if (type === 'number') {
+      newValue = value === '' ? 0 : Number(value);
+    }
+
+    setFormData(prev => ({
+      ...prev,
+      [name]: newValue,
+    }));
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const facilities = facilitiesInput.split(',').map(f => f.trim()).filter(f => f);
-    onSubmit({ ...formData, facilities });
-  };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value, type } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: type === 'checkbox' ? (e.target as HTMLInputElement).checked : value
-    }));
+    onSubmit({
+      ...formData,
+      totalCoaches: Number(formData.totalCoaches) || 0,
+      totalPupils: Number(formData.totalPupils) || 0,
+    });
   };
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
+      {/* Club Name */}
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Club Name</label>
+        <label className="block text-sm font-medium text-gray-700 mb-1">
+          Club Name
+        </label>
         <input
           type="text"
           name="name"
@@ -53,104 +71,84 @@ export default function GolfClubForm({ initialData, onSubmit, onCancel }: GolfCl
         />
       </div>
 
+      {/* Location */}
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Address</label>
+        <label className="block text-sm font-medium text-gray-700 mb-1">
+          Location
+        </label>
         <input
           type="text"
-          name="address"
-          value={formData.address}
+          name="location"
+          value={formData.location}
+          onChange={handleChange}
+          required
+          placeholder="City, Country or full address"
+          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+        />
+      </div>
+
+      {/* Description */}
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">
+          Description
+        </label>
+        <textarea
+          name="description"
+          value={formData.description}
+          onChange={handleChange}
+          rows={3}
+          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          placeholder="Short description about the club"
+        />
+      </div>
+
+      {/* Contact Email */}
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">
+          Contact Email
+        </label>
+        <input
+          type="email"
+          name="contactEmail"
+          value={formData.contactEmail}
           onChange={handleChange}
           required
           className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
         />
       </div>
 
-      <div className="grid grid-cols-3 gap-4">
+      {/* Totals */}
+      {/* <div className="grid grid-cols-2 gap-4">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">City</label>
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Total Coaches
+          </label>
           <input
-            type="text"
-            name="city"
-            value={formData.city}
+            type="number"
+            name="totalCoaches"
+            min={0}
+            value={formData.totalCoaches}
             onChange={handleChange}
-            required
             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           />
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">State</label>
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Total Pupils
+          </label>
           <input
-            type="text"
-            name="state"
-            value={formData.state}
+            type="number"
+            name="totalPupils"
+            min={0}
+            value={formData.totalPupils}
             onChange={handleChange}
-            required
             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           />
         </div>
+      </div> */}
 
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Zip Code</label>
-          <input
-            type="text"
-            name="zipCode"
-            value={formData.zipCode}
-            onChange={handleChange}
-            required
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-          />
-        </div>
-      </div>
-
-      <div className="grid grid-cols-2 gap-4">
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Phone</label>
-          <input
-            type="tel"
-            name="phone"
-            value={formData.phone}
-            onChange={handleChange}
-            required
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-          />
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
-          <input
-            type="email"
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
-            required
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-          />
-        </div>
-      </div>
-
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Website</label>
-        <input
-          type="url"
-          name="website"
-          value={formData.website}
-          onChange={handleChange}
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-        />
-      </div>
-
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Facilities (comma separated)</label>
-        <input
-          type="text"
-          value={facilitiesInput}
-          onChange={(e) => setFacilitiesInput(e.target.value)}
-          placeholder="e.g., Pro Shop, Restaurant, Driving Range"
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-        />
-      </div>
-
+      {/* Active */}
       <div className="flex items-center">
         <input
           type="checkbox"
@@ -159,9 +157,12 @@ export default function GolfClubForm({ initialData, onSubmit, onCancel }: GolfCl
           onChange={handleChange}
           className="mr-2"
         />
-        <label className="text-sm font-medium text-gray-700">Active</label>
+        <label className="text-sm font-medium text-gray-700">
+          Active
+        </label>
       </div>
 
+      {/* Actions */}
       <div className="flex justify-end space-x-3 pt-4">
         <button
           type="button"
@@ -174,7 +175,7 @@ export default function GolfClubForm({ initialData, onSubmit, onCancel }: GolfCl
           type="submit"
           className="px-4 py-2 bg-blue-600 text-white hover:bg-blue-700 rounded-lg transition-colors duration-200"
         >
-          {initialData ? 'Update' : 'Create'} Golf Club
+          {initialData ? 'Update Club' : 'Create Club'}
         </button>
       </div>
     </form>

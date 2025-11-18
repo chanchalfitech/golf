@@ -69,7 +69,7 @@ export default function Pupils() {
       ),
     },
 
-    { key: 'assignedCoachName' as keyof PupilModel, label: 'Coach Name' },
+    { key: 'selectedCoachName' as keyof PupilModel, label: 'Coach Name' },
 
     {
       key: 'createdAt' as keyof PupilModel,

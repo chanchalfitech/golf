@@ -41,12 +41,12 @@ export default function GolfClubs() {
       if (editingItem) {
         await updateItem(editingItem.id!, {
           ...formData,
-         updatedAt: Timestamp.fromDate(new Date()), // ✅ Firestore Timestamp
+         updatedAt: Timestamp.fromDate(new Date()), 
         });
       } else {
         await addItem({
           ...formData,
-          createdAt: Timestamp.fromDate(new Date()), // ✅ Firestore Timestamp
+          createdAt: Timestamp.fromDate(new Date()), 
     updatedAt: Timestamp.fromDate(new Date()),
         });
       }
@@ -94,6 +94,16 @@ export default function GolfClubs() {
 
   return (
     <div>
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-2xl font-bold">Clubs</h1>
+        <button
+          onClick={handleAdd}
+          // onClick={initialData ? handleEdit : handleAdd}
+          className="bg-blue-500 text-white px-4 py-2 rounded-md shadow hover:bg-blue-600"
+        >
+          Add Clubs
+        </button>
+      </div>
       <CrudTable
         title="Golf Clubs"
         data={data}

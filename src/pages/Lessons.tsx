@@ -58,16 +58,16 @@ export default function Lessons() {
 
   const columns = [
     { key: 'title' as keyof Lesson, label: 'Title' },
-    { key: 'coachId' as keyof Lesson, label: 'Coach ID' },
-    { key: 'category' as keyof Lesson, label: 'Category' },
-    { key: 'duration' as keyof Lesson, label: 'Duration (min)' },
+    // { key: 'coachId' as keyof Lesson, label: 'Coach ID' },
+    // { key: 'category' as keyof Lesson, label: 'Category' },
+    // { key: 'duration' as keyof Lesson, label: 'Duration (min)' },
     {
       key: 'difficulty' as keyof Lesson,
       label: 'Difficulty',
       render: (value: string) => (
         <span className={`px-2 py-1 rounded-full text-xs font-medium ${value === 'beginner' ? 'bg-green-100 text-green-800' :
-            value === 'intermediate' ? 'bg-yellow-100 text-yellow-800' :
-              'bg-red-100 text-red-800'
+          value === 'intermediate' ? 'bg-yellow-100 text-yellow-800' :
+            'bg-red-100 text-red-800'
           }`}>
           {value}
         </span>
@@ -89,13 +89,17 @@ export default function Lessons() {
     <div>
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold">Lessons</h1>
-        <button
-          onClick={handleAdd}
-          // onClick={initialData ? handleEdit : handleAdd}
-          className="bg-blue-500 text-white px-4 py-2 rounded-md shadow hover:bg-blue-600"
-        >
-          Add Lessons
-        </button>
+        {/* { */}
+          {/* data */}
+            {/* ? null */}
+            {/* :  */}
+            <button
+              onClick={handleAdd}
+              className="bg-blue-500 text-white px-4 py-2 rounded-md shadow hover:bg-blue-600"
+            >
+              Add Lessons
+            </button>
+        {/* } */}
       </div>
       <CrudTable
         title="Lessons"
@@ -117,7 +121,7 @@ export default function Lessons() {
           initialData={editingItem}
           onSubmit={handleSubmit}
           onCancel={() => setIsModalOpen(false)}
-          levelId = {levelId}
+          levelId={levelId}
         />
       </Modal>
     </div>

@@ -13,7 +13,7 @@ export default function Quizzes({ initialData }: { initialData?: QuizModel }) {
   const [editingItem, setEditingItem] = useState<QuizModel | null>(null);
 
   const data = React.useMemo(
-    () =>
+    () => 
       levelId
         ? quizzes.filter((q) => q.levelId === levelId)
         : quizzes,
@@ -51,7 +51,7 @@ export default function Quizzes({ initialData }: { initialData?: QuizModel }) {
         console.log('updated successfully');
       } else {
         await addItem(payload);
-        console.log('item added successfully'); 
+        console.log('item added successfully');
       }
       setIsModalOpen(false);
     } catch (error) {
@@ -62,7 +62,7 @@ export default function Quizzes({ initialData }: { initialData?: QuizModel }) {
 
   const columns = [
     { key: 'title' as keyof QuizModel, label: 'Title' },
-    { key: 'category' as keyof QuizModel, label: 'Category' },
+    // { key: 'category' as keyof QuizModel, label: 'Category' },
     {
       key: 'difficulty' as keyof QuizModel,
       label: 'Difficulty',
@@ -98,13 +98,17 @@ export default function Quizzes({ initialData }: { initialData?: QuizModel }) {
     <div>
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold">Quizes</h1>
-        <button
-          onClick={handleAdd}
-          // onClick={initialData ? handleEdit : handleAdd}
-          className="bg-blue-500 text-white px-4 py-2 rounded-md shadow hover:bg-blue-600"
-        >
-          Add Quizes
-        </button>
+        {
+          data
+            ? null
+            : <button
+              onClick={handleAdd}
+              className="bg-blue-500 text-white px-4 py-2 rounded-md shadow hover:bg-blue-600"
+            >
+              Add Quizes
+            </button>
+        }
+
       </div>
       <CrudTable
         title="Quizzes"

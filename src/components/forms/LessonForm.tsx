@@ -1,351 +1,190 @@
-// import React, { useState } from 'react';
-// import { Lesson } from '../../types/models';
-// import { useParams } from 'react-router-dom';
-
-// interface LessonFormProps {
-//   initialData?: Lesson | null;
-//   onSubmit: (data: Omit<Lesson, 'id' | 'createdAt'>) => void;
-//   onCancel: () => void;
-// }
-
-// export default function LessonForm({ initialData, onSubmit, onCancel }: LessonFormProps) {
-//   const { levelId } = useParams<{levelId: string}>();
-//   const levelNumber = levelId?.split('_')[1];
-//   const [formData, setFormData] = useState({
-//     title: initialData?.title || '',
-//     description: initialData?.description || '',
-//     content: initialData?.content || '',
-//     coachId: initialData?.coachId || '',
-//     duration: initialData?.duration || 0,
-//     difficulty: initialData?.difficulty || 'beginner' as const,
-//     category: initialData?.category || '',
-//     videoUrl: initialData?.videoUrl || '',
-//     isPublished: initialData?.isPublished ?? false,
-//     levelNumber,
-//   });
-
-//   const handleSubmit = (e: React.FormEvent) => {
-//     e.preventDefault();
-//     onSubmit(formData);
-//   };
-
-//   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-//     const { name, value, type } = e.target;
-//     setFormData(prev => ({
-//       ...prev,
-//       [name]: type === 'checkbox' ? (e.target as HTMLInputElement).checked : 
-//                type === 'number' ? Number(value) : value
-//     }));
-//   };
-
-//   return (
-//     <form onSubmit={handleSubmit} className="space-y-4">
-//       <div>
-//         <label className="block text-sm font-medium text-gray-700 mb-1">Title</label>
-//         <input
-//           type="text"
-//           name="title"
-//           value={formData.title}
-//           onChange={handleChange}
-//           required
-//           className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-//         />
-//       </div>
-
-
-//       <div>
-//         <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
-//         <textarea
-//           name="description"
-//           value={formData.description}
-//           onChange={handleChange}
-//           rows={3}
-//           className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-//         />
-//       </div>
-
-//       <div>
-//         <label className="block text-sm font-medium text-gray-700 mb-1">Content</label>
-//         <textarea
-//           name="content"
-//           value={formData.content}
-//           onChange={handleChange}
-//           rows={6}
-//           className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-//         />
-//       </div>
-
-//       <div className="grid grid-cols-2 gap-4">
-//         <div>
-//           <label className="block text-sm font-medium text-gray-700 mb-1">Coach ID</label>
-//           <input
-//             type="text"
-//             name="coachId"
-//             value={formData.coachId}
-//             onChange={handleChange}
-//             // required
-//             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-//           />
-//         </div>
-
-//         <div>
-//           <label className="block text-sm font-medium text-gray-700 mb-1">Duration (minutes)</label>
-//           <input
-//             type="number"
-//             name="duration"
-//             value={formData.duration}
-//             onChange={handleChange}
-//             min="0"
-//             required
-//             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-//           />
-//         </div>
-//       </div>
-
-//       <div className="grid grid-cols-2 gap-4">
-//         <div>
-//           <label className="block text-sm font-medium text-gray-700 mb-1">Difficulty</label>
-//           <select
-//             name="difficulty"
-//             value={formData.difficulty}
-//             onChange={handleChange}
-//             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-//           >
-//             <option value="beginner">Beginner</option>
-//             <option value="intermediate">Intermediate</option>
-//             <option value="advanced">Advanced</option>
-//           </select>
-//         </div>
-
-//         <div>
-//           <label className="block text-sm font-medium text-gray-700 mb-1">Category</label>
-//           <input
-//             type="text"
-//             name="category"
-//             value={formData.category}
-//             onChange={handleChange}
-//             // required
-//             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-//           />
-//         </div>
-//       </div>
-
-//       <div>
-//         <label className="block text-sm font-medium text-gray-700 mb-1">Video URL (optional)</label>
-//         <input
-//           type="url"
-//           name="videoUrl"
-//           value={formData.videoUrl}
-//           onChange={handleChange}
-//           className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-//         />
-//       </div>
-
-//       <div className="flex items-center">
-//         <input
-//           type="checkbox"
-//           name="isPublished"
-//           checked={formData.isPublished}
-//           onChange={handleChange}
-//           className="mr-2"
-//         />
-//         <label className="text-sm font-medium text-gray-700">Published</label>
-//       </div>
-
-//       <div className="flex justify-end space-x-3 pt-4">
-//         <button
-//           type="button"
-//           onClick={onCancel}
-//           className="px-4 py-2 text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors duration-200"
-//         >
-//           Cancel
-//         </button>
-//         <button
-//           type="submit"
-//           className="px-4 py-2 bg-blue-600 text-white hover:bg-blue-700 rounded-lg transition-colors duration-200"
-//         >
-//           {initialData ? 'Update' : 'Create'} Lesson
-//         </button>
-//       </div>
-//     </form>
-//   );
-// }
-
 import React, { useState } from "react";
-import { useParams } from "react-router-dom";
 import { Lesson } from "../../types/models";
+import { storage } from "../../config/firebase";
+import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 
 interface LessonFormProps {
-  initialData?: Lesson | null;
+  initialData?: Lesson;
   onSubmit: (data: Omit<Lesson, "id" | "createdAt">) => void;
   onCancel: () => void;
+  levelId?: string;
 }
 
-export default function LessonForm({ initialData, onSubmit, onCancel }: LessonFormProps) {
-  const { levelId } = useParams<{ levelId: string }>();
-  const levelNumber = levelId ? Number(levelId.split("_")[1]) : initialData?.levelNumber || 1;
+export default function LessonForm({
+  initialData,
+  onSubmit,
+  onCancel,
+  levelId
+}: LessonFormProps) {
+  const [title, setTitle] = useState(initialData?.title || "");
+  const [description, setDescription] = useState(initialData?.description || "");
+  const [difficulty, setDifficulty] = useState(initialData?.difficulty || "beginner");
+  const [isPublished, setIsPublished] = useState(initialData?.isPublished ?? false);
 
-  const [formData, setFormData] = useState({
-    title: initialData?.title || "",
-    description: initialData?.description || "",
-    estimatedReadTime: initialData?.estimatedReadTime || 0,
-    pdfUrl: initialData?.pdfUrl || "",
-    accessTier: initialData?.accessTier || "free",
-    isActive: initialData?.isActive ?? true,
-    isPublished: initialData?.publishedAt ? true : false,
-    sortOrder: initialData?.sortOrder || 0,
-    levelNumber,
-  });
+  // PDF URL saved in Firestore
+  const [pdfUrl, setPdfUrl] = useState(initialData?.pdfUrl || "");
+
+  // For upload control
+  const [pdfFile, setPdfFile] = useState<File | null>(null);
+  const [uploading, setUploading] = useState(false);
+
+  // When user picks PDF
+  const handlePdfChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (file.type !== "application/pdf") {
+      alert("Please select a valid PDF file");
+      return;
+    }
+
+    setPdfFile(file);
+  };
+
+  // Upload PDF to Firebase Storage
+  const handleUploadPdf = async () => {
+    if (!pdfFile) return alert("Please select a PDF file first");
+
+    try {
+      setUploading(true);
+
+      const storageRef = ref(storage, `lessons/${Date.now()}_${pdfFile.name}`);
+      await uploadBytes(storageRef, pdfFile);
+
+      const downloadURL = await getDownloadURL(storageRef);
+      setPdfUrl(downloadURL);
+
+      alert("PDF uploaded successfully!");
+    } catch (error) {
+      console.error(error);
+      alert("Failed to upload PDF");
+    } finally {
+      setUploading(false);
+    }
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    const submitData = {
-      ...formData,
-      publishedAt: formData.isPublished ? new Date() : null,
-      updatedAt: new Date(),
-      createdAt: initialData?.createdAt || new Date(),
-      createdBy: initialData?.createdBy || "admin",
-      levelNumber,
+    if (!title.trim()) return alert("Title is required");
+
+    const payload: Omit<Lesson, "id" | "createdAt"> = {
+      title,
+      description,
+      difficulty,
+      isPublished,
+      pdfUrl,
+      levelId: levelId || "",
+      updatedAt: new Date()
     };
 
-    onSubmit(submitData);
-  };
-
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
-  ) => {
-    const { name, value, type } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]:
-        type === "checkbox"
-          ? (e.target as HTMLInputElement).checked
-          : type === "number"
-          ? Number(value)
-          : value,
-    }));
+    onSubmit(payload);
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4 p-4">
+    <form onSubmit={handleSubmit} className="space-y-4">
 
-      {/* TITLE */}
+      {/* Title */}
       <div>
-        <label className="block text-sm font-medium mb-1">Title</label>
+        <label className="font-medium">Title</label>
         <input
-          type="text"
-          name="title"
-          value={formData.title}
-          onChange={handleChange}
+          className="w-full border rounded px-3 py-2"
+          value={title}
+          onChange={e => setTitle(e.target.value)}
           required
-          className="w-full border px-3 py-2 rounded"
         />
       </div>
 
-      {/* DESCRIPTION */}
+      {/* Description */}
       <div>
-        <label className="block text-sm font-medium mb-1">Description</label>
+        <label className="font-medium">Description</label>
         <textarea
-          name="description"
-          value={formData.description}
-          onChange={handleChange}
-          rows={3}
-          className="w-full border px-3 py-2 rounded"
+          className="w-full border rounded px-3 py-2"
+          value={description}
+          onChange={e => setDescription(e.target.value)}
         />
       </div>
 
-      {/* ESTIMATED READ TIME + SORT ORDER */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <div>
-          <label className="block text-sm font-medium mb-1">
-            Estimated Read Time (mins)
-          </label>
-          <input
-            type="number"
-            name="estimatedReadTime"
-            value={formData.estimatedReadTime}
-            onChange={handleChange}
-            className="w-full border px-3 py-2 rounded"
-          />
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium mb-1">Sort Order</label>
-          <input
-            type="number"
-            name="sortOrder"
-            value={formData.sortOrder}
-            onChange={handleChange}
-            className="w-full border px-3 py-2 rounded"
-          />
-        </div>
-      </div>
-
-      {/* PDF URL */}
+      {/* Difficulty */}
       <div>
-        <label className="block text-sm font-medium mb-1">PDF URL</label>
-        <input
-          type="text"
-          name="pdfUrl"
-          value={formData.pdfUrl}
-          onChange={handleChange}
-          className="w-full border px-3 py-2 rounded"
-        />
-      </div>
-
-      {/* ACCESS TIER */}
-      <div>
-        <label className="block text-sm font-medium mb-1">Access Tier</label>
+        <label className="font-medium">Difficulty</label>
         <select
-          name="accessTier"
-          value={formData.accessTier}
-          onChange={handleChange}
-          className="w-full border px-3 py-2 rounded"
+          className="w-full border rounded px-3 py-2"
+          value={difficulty}
+          onChange={e => setDifficulty(e.target.value)}
         >
-          <option value="free">Free</option>
-          <option value="premium">Premium</option>
+          <option value="beginner">Beginner</option>
+          <option value="intermediate">Intermediate</option>
+          <option value="advanced">Advanced</option>
         </select>
       </div>
 
-      {/* ACTIVE + PUBLISHED */}
-      <div className="flex items-center gap-6">
-        <label className="flex items-center gap-2">
-          <input
-            type="checkbox"
-            name="isActive"
-            checked={formData.isActive}
-            onChange={handleChange}
-          />
-          Active
-        </label>
+      {/* PDF Upload Section */}
+      <div>
+        <label className="font-medium">Upload Lesson PDF</label>
 
-        <label className="flex items-center gap-2">
+        <div className="flex flex-col sm:flex-row gap-3 mt-2">
+
           <input
-            type="checkbox"
-            name="isPublished"
-            checked={formData.isPublished}
-            onChange={handleChange}
+            type="file"
+            accept="application/pdf"
+            onChange={handlePdfChange}
+            className="border px-3 py-2 rounded"
           />
-          Published
-        </label>
+
+          <button
+            type="button"
+            disabled={!pdfFile || uploading}
+            onClick={handleUploadPdf}
+            className={`px-4 py-2 text-white rounded ${
+              uploading
+                ? "bg-gray-400 cursor-not-allowed"
+                : "bg-blue-500 hover:bg-blue-600"
+            }`}
+          >
+            {uploading ? "Uploading..." : "Upload PDF"}
+          </button>
+        </div>
+
+        {pdfUrl && (
+          <p className="text-green-600 text-sm mt-2">
+            PDF uploaded —{" "}
+            <a href={pdfUrl} target="_blank" className="underline">
+              View File
+            </a>
+          </p>
+        )}
+
+        {/* Read-only URL field */}
+        <input
+          readOnly
+          value={pdfUrl}
+          placeholder="PDF URL appears here after upload"
+          className="w-full mt-2 border px-3 py-2 rounded bg-gray-50"
+        />
       </div>
 
-      {/* BUTTONS */}
-      <div className="flex justify-end space-x-3 pt-4">
+      {/* Published toggle */}
+      <div className="flex items-center gap-2">
+        <input
+          type="checkbox"
+          checked={isPublished}
+          onChange={e => setIsPublished(e.target.checked)}
+        />
+        <label>Published</label>
+      </div>
+
+      {/* Submit */}
+      <div className="flex gap-4 mt-4">
+        <button className="bg-blue-500 text-white px-4 py-2 rounded">
+          {initialData ? "Update Lesson" : "Create Lesson"}
+        </button>
         <button
           type="button"
           onClick={onCancel}
-          className="px-4 py-2 bg-gray-100 rounded hover:bg-gray-200"
+          className="bg-gray-300 px-4 py-2 rounded"
         >
           Cancel
-        </button>
-
-        <button
-          type="submit"
-          className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-        >
-          {initialData ? "Update" : "Create"} Lesson
         </button>
       </div>
 

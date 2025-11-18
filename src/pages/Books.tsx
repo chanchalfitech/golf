@@ -26,6 +26,7 @@ export default function Books({ initialData }: { initialData?: BookModel }
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingItem, setEditingItem] = useState<BookModel | null>(null);
 
+
   const data = React.useMemo(
     () =>
       levelId
@@ -33,6 +34,7 @@ export default function Books({ initialData }: { initialData?: BookModel }
         : books,
     [books, levelId]
   )
+
 
   // Open modal to edit a book
   const handleEdit = (item: BookModel) => {
@@ -144,14 +146,19 @@ export default function Books({ initialData }: { initialData?: BookModel }
       {/* Header + Add Button */}
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold">Books</h1>
-        <button
-          onClick={handleAdd}
-          className="bg-blue-500 text-white px-4 py-2 rounded-md shadow hover:bg-blue-600"
-        >
-          {/* Add Book */}
-          {initialData ? "Update Book" : "Create Book"}
-        </button>
+        {/* { */}
+          {/* data */}
+            {/* ? null */}
+            {/* :  */}
+            <button
+              onClick={handleAdd}
+              className="bg-blue-500 text-white px-4 py-2 rounded-md shadow hover:bg-blue-600"
+            >
+              Add Book
+            </button>
+        {/* } */}
       </div>
+
 
       {/* Table */}
       <CrudTable
