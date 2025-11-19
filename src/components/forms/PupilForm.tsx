@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import {
   PupilModel,
   AssignmentStatus,
-} from "../../models/pupil/PupilModel";
+} from "../../model/PupilModel";
 
 export interface PupilFormValues {
   name: string;
@@ -19,6 +19,47 @@ interface PupilFormProps {
   onCancel: () => void;
 }
 
+
+// Try to turn any Firestore/JS value into a JS Date
+const toJsDate = (value: any): Date | null => {
+  if (!value) return null;
+
+  // Already a JS Date
+  if (value instanceof Date) return value;
+
+  // Firestore Timestamp (or similar) with .toDate()
+  if (typeof value.toDate === "function") {
+    const d = value.toDate();
+    return d instanceof Date && !isNaN(d.getTime()) ? d : null;
+  }
+
+  // Firestore-style object { seconds, nanoseconds }
+  if (typeof value.seconds === "number") {
+    const sec = value.seconds;
+    const nsec =
+      typeof value.nanoseconds === "number" ? value.nanoseconds : 0;
+    return new Date(sec * 1000 + Math.floor(nsec / 1e6));
+  }
+
+  // Fallback: try Date constructor
+  const parsed = new Date(value);
+  return isNaN(parsed.getTime()) ? null : parsed;
+};
+
+const toInputDateString = (value: any): string => {
+  const d = toJsDate(value);
+  if (!d) return "";
+  // for <input type="date" /> -> yyyy-MM-dd
+  return d.toISOString().slice(0, 10);
+};
+
+const formatDateTimeString = (value: any): string => {
+  const d = toJsDate(value);
+  if (!d) return "-";
+  return d.toLocaleString();
+};
+
+
 const PupilForm: React.FC<PupilFormProps> = ({
   initialData,
   onSubmit,
@@ -29,13 +70,17 @@ const PupilForm: React.FC<PupilFormProps> = ({
     clubName: initialData?.selectedClubName ?? "",
     coachName: initialData?.selectedCoachName ?? "",
     dobStr: initialData?.dateOfBirth
-      ? initialData.dateOfBirth.toISOString().slice(0, 10)
+      ? toInputDateString(initialData.dateOfBirth as any)
       : "",
     assignmentStatusStr:
       (initialData?.assignmentStatus as AssignmentStatus) ?? "pending",
   });
 
-  const registeredAt: Date | null = initialData?.createdAt ?? null; // read-only
+  // registeredAt as string instead of forcing Date
+  const registeredAtStr = initialData?.createdAt
+    ? formatDateTimeString(initialData.createdAt as any)
+    : "-";
+
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -156,17 +201,19 @@ const PupilForm: React.FC<PupilFormProps> = ({
       </div>
 
       {/* Registered At (read-only) */}
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">
-          Registered At
-        </label>
-        <input
-          type="text"
-          value={formatDateTime(registeredAt)}
-          readOnly
-          className="w-full px-3 py-2 bg-gray-50 border border-gray-300 rounded-lg text-gray-700"
-        />
-      </div>
+   {/* Registered At (read-only) */}
+<div>
+  <label className="block text-sm font-medium text-gray-700 mb-1">
+    Registered At
+  </label>
+  <input
+    type="text"
+    value={registeredAtStr}
+    readOnly
+    className="w-full px-3 py-2 bg-gray-50 border border-gray-300 rounded-lg text-gray-700"
+  />
+</div>
+
 
       {/* Actions */}
       <div className="flex justify-end space-x-3 pt-4">
