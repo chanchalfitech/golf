@@ -243,7 +243,7 @@ import { useParams } from "react-router-dom";
 import { BookModel } from "../../model/BookModel";
 
 import { storage } from "../../config/firebase";
-import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
 interface BookFormProps {
   initialData?: BookModel;

@@ -1,9 +1,10 @@
 import React, { useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { BookModel } from "../model/BookModel";
 import CrudTable from "../components/CrudTable";
 import Modal from "../components/Modal";
 import BookForm from "../components/forms/BookForm";
+import Header from "../components/Header";
 import { fireDate } from "../utils/fireDate";
 
 // Firestore (v9 modular) – use the db you export from firebase.ts
@@ -25,6 +26,7 @@ export default function Books({ initialData }: { initialData?: BookModel }
   const { data: books, loading } = useFirestore<BookModel>("books");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingItem, setEditingItem] = useState<BookModel | null>(null);
+  const navigate = useNavigate();
 
 
   const data = React.useMemo(
@@ -143,24 +145,13 @@ export default function Books({ initialData }: { initialData?: BookModel }
 
   return (
     <div className="p-6">
-      {/* Header + Add Button */}
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">Books</h1>
-        {/* { */}
-          {/* data */}
-            {/* ? null */}
-            {/* :  */}
-            <button
-              onClick={handleAdd}
-              className="bg-blue-500 text-white px-4 py-2 rounded-md shadow hover:bg-blue-600"
-            >
-              Add Book
-            </button>
-        {/* } */}
-      </div>
+      <Header
+        title="Books"
+        onBack={() => navigate(-1)}
+        onAdd={handleAdd}
+        disableAdd={data && data.length > 0}
+      />
 
-
-      {/* Table */}
       <CrudTable
         title="Books"
         data={data}
@@ -168,8 +159,6 @@ export default function Books({ initialData }: { initialData?: BookModel }
         onEdit={handleEdit}
         loading={loading}
       />
-
-      {/* Modal for Create / Update */}
       <Modal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}

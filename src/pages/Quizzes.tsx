@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { QuizModel, QuizQuestionModel } from '../model/QuizModel';
 import { useFirestore } from '../hooks/useFirestore';
 import CrudTable from '../components/CrudTable';
 import Modal from '../components/Modal';
 import QuizForm from '../components/forms/QuizForm';
+import Header from '../components/Header';
 
 export default function Quizzes({ initialData }: { initialData?: QuizModel }) {
   const { levelId } = useParams<{ levelId: string }>();
@@ -13,13 +14,13 @@ export default function Quizzes({ initialData }: { initialData?: QuizModel }) {
   const [editingItem, setEditingItem] = useState<QuizModel | null>(null);
 
   const data = React.useMemo(
-    () => 
+    () =>
       levelId
         ? quizzes.filter((q) => q.levelId === levelId)
         : quizzes,
     [quizzes, levelId]
   )
-
+  const navigate = useNavigate();
   const handleAdd = () => {
     setEditingItem(null);
     setIsModalOpen(true);
@@ -96,20 +97,12 @@ export default function Quizzes({ initialData }: { initialData?: QuizModel }) {
   return (
 
     <div>
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">Quizes</h1>
-        {
-          data
-            ? null
-            : <button
-              onClick={handleAdd}
-              className="bg-blue-500 text-white px-4 py-2 rounded-md shadow hover:bg-blue-600"
-            >
-              Add Quizes
-            </button>
-        }
-
-      </div>
+      <Header
+        title="Quizzes"
+        onBack={() => navigate(-1)}
+        onAdd={handleAdd}
+        disableAdd={data && data.length > 0}
+      />
       <CrudTable
         title="Quizzes"
         data={data}

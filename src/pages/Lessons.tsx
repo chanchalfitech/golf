@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { Lesson } from '../types/models';
 import { useFirestore } from '../hooks/useFirestore';
 import CrudTable from '../components/CrudTable';
 import Modal from '../components/Modal';
 import LessonForm from '../components/forms/LessonForm';
+import Header from '../components/Header';
 
 export default function Lessons() {
   const { levelId } = useParams<{ levelId: string }>();
@@ -19,6 +20,7 @@ export default function Lessons() {
         : lessons,
     [lessons, levelId]
   )
+  const navigate = useNavigate();
   const handleAdd = () => {
     setEditingItem(null);
     setIsModalOpen(true);
@@ -87,20 +89,12 @@ export default function Lessons() {
 
   return (
     <div>
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">Lessons</h1>
-        {/* { */}
-          {/* data */}
-            {/* ? null */}
-            {/* :  */}
-            <button
-              onClick={handleAdd}
-              className="bg-blue-500 text-white px-4 py-2 rounded-md shadow hover:bg-blue-600"
-            >
-              Add Lessons
-            </button>
-        {/* } */}
-      </div>
+      <Header
+        title="Lessons"
+        onBack={() => navigate(-1)}
+        onAdd={handleAdd}
+        disableAdd={data && data.length > 0}
+      />
       <CrudTable
         title="Lessons"
         data={data}

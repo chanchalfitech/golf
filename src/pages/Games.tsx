@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { Game } from '../types/models';
 import { useFirestore } from '../hooks/useFirestore';
 import CrudTable from '../components/CrudTable';
 import Modal from '../components/Modal';
 import GameForm from '../components/forms/GameForm';
+import Header from '../components/Header';
 
 export default function Games() {
   const { levelId } = useParams<{ levelId: string }>();
@@ -19,6 +20,7 @@ export default function Games() {
         : games,
     [games, levelId]
   )
+  const navigate = useNavigate();
   const handleAdd = () => {
     setEditingItem(null);
     setIsModalOpen(true);
@@ -59,8 +61,8 @@ export default function Games() {
 
   const columns = [
     { key: 'title' as keyof Game, label: 'Title' },
-    { key: 'type' as keyof Game, label: 'Type' },
-    // { key: 'category' as keyof Game, label: 'category' },
+    // { key: 'type' as keyof Game, label: 'Type' },
+    { key: 'category' as keyof Game, label: 'category' },
     {
       key: 'difficulty' as keyof Game,
       label: 'Difficulty',
@@ -74,7 +76,7 @@ export default function Games() {
       )
     },
     { key: 'maxScore' as keyof Game, label: 'Max Score' },
-    { key: 'timeLimit' as keyof Game, label: 'Time Limit (min)' },
+    { key: 'timeLimit' as keyof Game, label: 'Time Limit (min)' },  
     {
       key: 'isActive' as keyof Game,
       label: 'Status',
@@ -89,19 +91,12 @@ export default function Games() {
 
   return (
     <div>
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">Games</h1>
-        {
-          data
-            ? null
-            : <button
-              onClick={handleAdd}
-              className="bg-blue-500 text-white px-4 py-2 rounded-md shadow hover:bg-blue-600"
-            >
-              Add Games
-            </button>
-        }
-      </div>
+      <Header
+        title="Games"
+        onBack={() => navigate(-1)}
+        onAdd={handleAdd}
+        // disableAdd={data && data.length > 0}
+      />
       <CrudTable
         title="Games"
         data={data}

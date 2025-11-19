@@ -31,7 +31,7 @@ const Level: React.FC = () => {
             const snap = await getDoc(ref);
             if (!snap.exists()) return;
             setLevel(LevelModel.fromFirestoreDoc(snap));
-            
+
         };
         fetchLevel();
         console.log("Fetched levelId:", levelId);
@@ -41,7 +41,7 @@ const Level: React.FC = () => {
 
     const theme = colorMap[level.levelNumber] || "gray-500";
     // console.log(level.levelNumber);
-        console.log("Level Number:", levelId?.split('_')[1]);
+    console.log("Level Number:", levelId?.split('_')[1]);
 
 
     return (
@@ -51,15 +51,15 @@ const Level: React.FC = () => {
                 className={`rounded-xl p-8 shadow-xl text-white bg-${theme}`}
             >
                 <h1 className="text-3xl font-bold mb-2">{level.name}</h1>
-                <p className="mb-6">
+                {/* <p className="mb-6">
                     {level.pupilDescription.replace(/<[^>]+>/g, '')}
-                </p>
+                </p> */}
 
                 {/* <div className="flex flex-col sm:flex-row gap-4"> */}
-                    {/* <button className="flex-1 bg-white text-black font-bold py-3 px-6 rounded-lg shadow hover:shadow-lg transition">
+                {/* <button className="flex-1 bg-white text-black font-bold py-3 px-6 rounded-lg shadow hover:shadow-lg transition">
                         🚀 Start {level.name}
                     </button> */}
-                    {/* <button className="flex-1 border border-white py-3 px-6 rounded-lg bg-white text-black hover:bg-gray-100 transition">
+                {/* <button className="flex-1 border border-white py-3 px-6 rounded-lg bg-white text-black hover:bg-gray-100 transition">
                         🎥 View Media
                     </button> */}
                 {/* </div> */}
@@ -76,12 +76,12 @@ const Level: React.FC = () => {
                         },
                         {
                             title: "Quizzes", icon: HelpCircle,
-                            route: "quizzes"
+                            route: "quizzes"    
                         },
-                        {
-                            title: "Challenges", icon: Target,
-                            route: "challenges"
-                        },
+                        // {
+                        //     title: "Challenges", icon: Target,
+                        //     route: "challenges"
+                        // },
                         {
                             title: "Games", icon: Gamepad2,
                             route: "games"
@@ -102,7 +102,7 @@ const Level: React.FC = () => {
                             <button
                                 className={`mt-3 text-sm px-3 py-2 rounded-md bg-${theme}-100 text-${theme} hover:bg-${theme}-200`}
                             >
-                                 {item.title}
+                                {item.title}
                                 {/* {item.title === "Books"
                                     ? "Start Reading"
                                     : item.title === "Quizzes"

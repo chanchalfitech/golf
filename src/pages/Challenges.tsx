@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams,useNavigate } from 'react-router-dom';
 import { Challenge } from '../types/models';
 import { useFirestore } from '../hooks/useFirestore';
 import CrudTable from '../components/CrudTable';
@@ -20,7 +20,7 @@ const Challenges = ({ initialData }) => {
         : challenges,
     [challenges, levelId]
   )
-
+  const navigate = useNavigate();
   const handleAdd = () => {
     setEditingItem(null);
     setIsModalOpen(true);
@@ -91,8 +91,11 @@ const Challenges = ({ initialData }) => {
   return (
     <div className='p-6'>
       <Header
-        title={initialData ? 'Edit Challenge' : 'Add Challenge'}
-        onClick={handleAdd} />
+        title="Challenges"
+        onBack={() => navigate(-1)}
+        onAdd={handleAdd}
+        disableAdd={data && data.length > 0}
+      />
       <CrudTable
         title="Challenges"
         data={data}

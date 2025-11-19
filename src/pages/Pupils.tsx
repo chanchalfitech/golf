@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { PupilModel } from '../model/PupilModel';
 import { useFirestore } from '../hooks/useFirestore';
 import CrudTable from '../components/CrudTable';
@@ -49,7 +49,7 @@ export default function Pupils() {
     {
       key: 'dateOfBirth' as keyof PupilModel,
       label: 'Date of Birth',
-      render: (value: unknown) => formatDisplayDate(value, false), // e.g., 10/23/2009
+      render: (value: unknown) => formatDisplayDate(value, false), 
     },
 
     {
@@ -74,7 +74,7 @@ export default function Pupils() {
     {
       key: 'createdAt' as keyof PupilModel,
       label: 'Registered At',
-      render: (value: unknown) => formatDisplayDate(value, true), // e.g., 10/23/2009, 3:45:12 PM
+      render: (value: unknown) => formatDisplayDate(value, true), 
     },
   ];
 

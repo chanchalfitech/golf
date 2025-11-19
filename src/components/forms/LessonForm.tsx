@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Lesson } from "../../types/models";
 import { storage } from "../../config/firebase";
-import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
 interface LessonFormProps {
   initialData?: Lesson;
