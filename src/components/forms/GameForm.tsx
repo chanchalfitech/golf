@@ -1,161 +1,7 @@
-// import React, { useState } from 'react';
-// import { Game } from '../../types/models';
-
-// interface GameFormProps {
-//   initialData?: Game | null;
-//   onSubmit: (data: Omit<Game, 'id' | 'createdAt'>) => void;
-//   onCancel: () => void;
-// }
-
-// export default function GameForm({ initialData, onSubmit, onCancel }: GameFormProps) {
-//   const [formData, setFormData] = useState({
-//     title: initialData?.title || '',
-//     type: initialData?.type || '',
-//     difficulty: initialData?.difficulty || 'easy' as const,
-//     description: initialData?.description || '',
-//     instructions: initialData?.instructions || '',
-//     maxScore: initialData?.maxScore || 0,
-//     timeLimit: initialData?.timeLimit || undefined,
-//     isActive: initialData?.isActive ?? true,
-//   });
-
-//   const handleSubmit = (e: React.FormEvent) => {
-//     e.preventDefault();
-//     onSubmit(formData);
-//   };
-
-//   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-//     const { name, value, type } = e.target;
-//     setFormData(prev => ({
-//       ...prev,
-//       [name]: type === 'checkbox' ? (e.target as HTMLInputElement).checked : 
-//                type === 'number' ? (value === '' ? undefined : Number(value)) : value
-//     }));
-//   };
-
-//   return (
-//     <form onSubmit={handleSubmit} className="space-y-4">
-//       <div>
-//         <label className="block text-sm font-medium text-gray-700 mb-1">Title</label>
-//         <input
-//           type="text"
-//           name="title"
-//           value={formData.title}
-//           onChange={handleChange}
-//           required
-//           className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-//         />
-//       </div>
-
-//       <div className="grid grid-cols-2 gap-4">
-//         <div>
-//           <label className="block text-sm font-medium text-gray-700 mb-1">Type</label>
-//           <input
-//             type="text"
-//             name="type"
-//             value={formData.type}
-//             onChange={handleChange}
-//             required
-//             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-//           />
-//         </div>
-
-//         <div>
-//           <label className="block text-sm font-medium text-gray-700 mb-1">Difficulty</label>
-//           <select
-//             name="difficulty"
-//             value={formData.difficulty}
-//             onChange={handleChange}
-//             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-//           >
-//             <option value="easy">Easy</option>
-//             <option value="medium">Medium</option>
-//             <option value="hard">Hard</option>
-//           </select>
-//         </div>
-//       </div>
-
-//       <div>
-//         <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
-//         <textarea
-//           name="description"
-//           value={formData.description}
-//           onChange={handleChange}
-//           rows={3}
-//           className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-//         />
-//       </div>
-
-//       <div>
-//         <label className="block text-sm font-medium text-gray-700 mb-1">Instructions</label>
-//         <textarea
-//           name="instructions"
-//           value={formData.instructions}
-//           onChange={handleChange}
-//           rows={4}
-//           className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-//         />
-//       </div>
-
-//       <div className="grid grid-cols-2 gap-4">
-//         <div>
-//           <label className="block text-sm font-medium text-gray-700 mb-1">Max Score</label>
-//           <input
-//             type="number"
-//             name="maxScore"
-//             value={formData.maxScore}
-//             onChange={handleChange}
-//             min="0"
-//             required
-//             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-//           />
-//         </div>
-
-//         <div>
-//           <label className="block text-sm font-medium text-gray-700 mb-1">Time Limit (minutes)</label>
-//           <input
-//             type="number"
-//             name="timeLimit"
-//             value={formData.timeLimit || ''}
-//             onChange={handleChange}
-//             min="0"
-//             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-//           />
-//         </div>
-//       </div>
-
-//       <div className="flex items-center">
-//         <input
-//           type="checkbox"
-//           name="isActive"
-//           checked={formData.isActive}
-//           onChange={handleChange}
-//           className="mr-2"
-//         />
-//         <label className="text-sm font-medium text-gray-700">Active</label>
-//       </div>
-
-//       <div className="flex justify-end space-x-3 pt-4">
-//         <button
-//           type="button"
-//           onClick={onCancel}
-//           className="px-4 py-2 text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors duration-200"
-//         >
-//           Cancel
-//         </button>
-//         <button
-//           type="submit"
-//           className="px-4 py-2 bg-blue-600 text-white hover:bg-blue-700 rounded-lg transition-colors duration-200"
-//         >
-//           {initialData ? 'Update' : 'Create'} Game
-//         </button>
-//       </div>
-//     </form>
-//   );
-// }
-
 import React, { useState } from "react";
 import { useParams } from "react-router-dom";
+import { storage } from "../../config/firebase";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
 interface GameFormProps {
   initialData?: any;
@@ -180,7 +26,58 @@ export default function GameForm({ initialData, onSubmit, onCancel }: GameFormPr
   });
 
   const { levelId } = useParams<{ levelId: string }>();
-    const levelNumber = levelId ? Number(levelId.split("_")[1]) : initialData?.levelNumber || 1;
+  const levelNumber = levelId ? Number(levelId.split("_")[1]) : initialData?.levelNumber || 1;
+
+  const [thumbnailFile, setThumbnailFile] = useState<File | null>(null);
+  const [uploadingImage, setUploadingImage] = useState(false);
+
+  const handleThumbnailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith("image/")) {
+      alert("Select a valid image (PNG, JPG, JPEG)");
+      return;
+    }
+
+    setThumbnailFile(file);
+  };
+
+  const uploadImage = async () => {
+    if (!thumbnailFile) return alert("Please choose an image first");
+
+    try {
+      setUploadingImage(true);
+
+      const storageRef = ref(
+        storage,
+        `game_thumbnails/${Date.now()}_${thumbnailFile.name}`
+      );
+
+      await uploadBytes(storageRef, thumbnailFile);
+      const downloadURL = await getDownloadURL(storageRef);
+
+      setFormData((prev) => ({
+        ...prev,
+        thumbnailUrl: downloadURL,
+      }));
+
+      alert("Image uploaded successfully!");
+    } catch (error) {
+      console.error(error);
+      alert("Image upload failed");
+    } finally {
+      setUploadingImage(false);
+    }
+  };
+
+  const handleChange = (e) => {
+    const { name, value, type } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: type === "checkbox" ? e.target.checked : type === "number" ? Number(value) : value,
+    }));
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -197,17 +94,9 @@ export default function GameForm({ initialData, onSubmit, onCancel }: GameFormPr
     onSubmit(submitData);
   };
 
-  const handleChange = (e) => {
-    const { name, value, type } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: type === "checkbox" ? e.target.checked : type === "number" ? Number(value) : value,
-    }));
-  };
-
   return (
     <form onSubmit={handleSubmit} className="space-y-4 p-4">
-      {/* TITLE */}
+
       <div>
         <label className="block text-sm font-medium">Title</label>
         <input
@@ -220,7 +109,6 @@ export default function GameForm({ initialData, onSubmit, onCancel }: GameFormPr
         />
       </div>
 
-      {/* DESCRIPTION */}
       <div>
         <label className="block text-sm font-medium">Description</label>
         <textarea
@@ -232,7 +120,6 @@ export default function GameForm({ initialData, onSubmit, onCancel }: GameFormPr
         />
       </div>
 
-      {/* CATEGORY + TIP TEXT */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
           <label className="block text-sm font-medium">Category</label>
@@ -257,32 +144,60 @@ export default function GameForm({ initialData, onSubmit, onCancel }: GameFormPr
         </div>
       </div>
 
-      {/* VIDEO URL + THUMBNAIL */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <div>
-          <label className="block text-sm font-medium">Video URL</label>
-          <input
-            type="text"
-            name="videoUrl"
-            value={formData.videoUrl}
-            onChange={handleChange}
-            className="w-full border px-3 py-2 rounded"
-          />
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium">Thumbnail URL</label>
-          <input
-            type="text"
-            name="thumbnailUrl"
-            value={formData.thumbnailUrl}
-            onChange={handleChange}
-            className="w-full border px-3 py-2 rounded"
-          />
-        </div>
+      <div>
+        <label className="block text-sm font-medium">Video URL</label>
+        <input
+          type="text"
+          name="videoUrl"
+          value={formData.videoUrl}
+          onChange={handleChange}
+          className="w-full border px-3 py-2 rounded"
+        />
       </div>
 
-      {/* ESTIMATED TIME + VIDEO DURATION */}
+      <div>
+        <label className="block text-sm font-medium mb-1">Thumbnail Image</label>
+
+        <div className="flex flex-col sm:flex-row gap-3">
+          <input
+            type="file"
+            accept="image/*"
+            onChange={handleThumbnailChange}
+            className="border px-3 py-2 rounded"
+          />
+
+          <button
+            type="button"
+            onClick={uploadImage}
+            disabled={!thumbnailFile || uploadingImage}
+            className={`px-4 py-2 rounded text-white ${
+              uploadingImage || !thumbnailFile
+                ? "bg-gray-400 cursor-not-allowed"
+                : "bg-blue-500 hover:bg-blue-600"
+            }`}
+          >
+            {uploadingImage ? "Uploading..." : "Upload Image"}
+          </button>
+        </div>
+
+        {formData.thumbnailUrl && (
+          <p className="text-green-600 text-sm mt-2">
+            Image Uploaded —{" "}
+            <a href={formData.thumbnailUrl} target="_blank" className="underline">
+              View Thumbnail
+            </a>
+          </p>
+        )}
+
+        <input
+          type="text"
+          value={formData.thumbnailUrl}
+          readOnly
+          className="w-full mt-2 border px-3 py-2 rounded bg-gray-50"
+          placeholder="Image URL will appear here after upload"
+        />
+      </div>
+
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
           <label className="block text-sm font-medium">Estimated Time (mins)</label>
@@ -307,31 +222,6 @@ export default function GameForm({ initialData, onSubmit, onCancel }: GameFormPr
         </div>
       </div>
 
-      {/* <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <div>
-          <label className="block text-sm font-medium">Level Number</label>
-          <input
-            type="number"
-            name="levelNumber"
-            value={formData.levelNumber}
-            onChange={handleChange}
-            className="w-full border px-3 py-2 rounded"
-          />
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium">Sort Order</label>
-          <input
-            type="number"
-            name="sortOrder"
-            value={formData.sortOrder}
-            onChange={handleChange}
-            className="w-full border px-3 py-2 rounded"
-          />
-        </div>
-      </div> */}
-
-      {/* ACCESS TIER */}
       <div>
         <label className="block text-sm font-medium">Access Tier</label>
         <select
@@ -345,7 +235,6 @@ export default function GameForm({ initialData, onSubmit, onCancel }: GameFormPr
         </select>
       </div>
 
-      {/* ACTIVE SWITCH */}
       <div className="flex items-center gap-2">
         <input
           type="checkbox"
@@ -356,7 +245,6 @@ export default function GameForm({ initialData, onSubmit, onCancel }: GameFormPr
         <label className="text-sm font-medium">Active</label>
       </div>
 
-      {/* BUTTONS */}
       <div className="flex justify-end space-x-3 pt-4">
         <button
           type="button"
