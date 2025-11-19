@@ -61,22 +61,22 @@ export default function Games() {
 
   const columns = [
     { key: 'title' as keyof Game, label: 'Title' },
-    // { key: 'type' as keyof Game, label: 'Type' },
+    { key: 'accessTier' as keyof Game, label: 'Access Tier' },
     { key: 'category' as keyof Game, label: 'category' },
-    {
-      key: 'difficulty' as keyof Game,
-      label: 'Difficulty',
-      render: (value: string) => (
-        <span className={`px-2 py-1 rounded-full text-xs font-medium ${value === 'easy' ? 'bg-green-100 text-green-800' :
-          value === 'medium' ? 'bg-yellow-100 text-yellow-800' :
-            'bg-red-100 text-red-800'
-          }`}>
-          {value}
-        </span>
-      )
-    },
-    { key: 'maxScore' as keyof Game, label: 'Max Score' },
-    { key: 'timeLimit' as keyof Game, label: 'Video Duration (seconds)' },  
+    // {
+    //   key: 'difficulty' as keyof Game,
+    //   label: 'Difficulty',
+    //   render: (value: string) => (
+    //     <span className={`px-2 py-1 rounded-full text-xs font-medium ${value === 'easy' ? 'bg-green-100 text-green-800' :
+    //       value === 'medium' ? 'bg-yellow-100 text-yellow-800' :
+    //         'bg-red-100 text-red-800'
+    //       }`}>
+    //       {value}
+    //     </span>
+    //   )
+    // },
+    // { key: 'maxScore' as keyof Game, label: 'Max Score' },
+    { key: 'videoDurationSeconds' as keyof Game, label: 'Video Duration (seconds)' },  
     {
       key: 'isActive' as keyof Game,
       label: 'Status',
