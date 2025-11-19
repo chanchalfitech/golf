@@ -76,7 +76,7 @@ export default function Games() {
       )
     },
     { key: 'maxScore' as keyof Game, label: 'Max Score' },
-    { key: 'timeLimit' as keyof Game, label: 'Time Limit (min)' },  
+    { key: 'timeLimit' as keyof Game, label: 'Video Duration (seconds)' },  
     {
       key: 'isActive' as keyof Game,
       label: 'Status',
