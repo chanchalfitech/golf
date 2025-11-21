@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Game } from '../types/models';
+import { collection, doc } from 'firebase/firestore';
+import { db } from '../config/firebase';
 import { useFirestore } from '../hooks/useFirestore';
 import CrudTable from '../components/CrudTable';
 import Modal from '../components/Modal';
@@ -42,9 +44,12 @@ export default function Games() {
   };
 
   const handleSubmit = async (formData: Omit<Game, 'id' | 'createdAt'>) => {
+    const colRef = collection(db, "games");
+    const ref = doc(colRef);
     try {
       const payload = {
         ...formData,
+        id: ref.id,
         levelId: levelId ? String(levelId) : "",
       } as Omit<Game, 'id' | 'createdAt'>;
 
@@ -76,7 +81,7 @@ export default function Games() {
     //   )
     // },
     // { key: 'maxScore' as keyof Game, label: 'Max Score' },
-    { key: 'videoDurationSeconds' as keyof Game, label: 'Video Duration (seconds)' },  
+    { key: 'videoDurationSeconds' as keyof Game, label: 'Video Duration (seconds)' },
     {
       key: 'isActive' as keyof Game,
       label: 'Status',
@@ -95,7 +100,7 @@ export default function Games() {
         title="Games"
         onBack={() => navigate(-1)}
         onAdd={handleAdd}
-        // disableAdd={data && data.length > 0}
+      // disableAdd={data && data.length > 0}
       />
       <CrudTable
         title="Games"

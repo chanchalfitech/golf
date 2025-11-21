@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { useParams,useNavigate } from 'react-router-dom';
 import { Challenge } from '../types/models';
+import { collection, doc } from 'firebase/firestore';
+import { db } from '../config/firebase';
 import { useFirestore } from '../hooks/useFirestore';
 import CrudTable from '../components/CrudTable';
 import Modal from '../components/Modal';
@@ -42,9 +44,12 @@ const Challenges = ({ initialData }) => {
   };
 
   const handleSubmit = async (formData: Omit<Challenge, 'id' | 'createdAt'>) => {
+    const colRef = collection(db, "challenges");
+        const ref = doc(colRef);
     try {
       const payload = {
         ...formData,
+        id: ref.id,
         levelId: levelId ? String(levelId) : "",
       } as Omit<Challenge, 'id' | 'createdAt'>;
 
